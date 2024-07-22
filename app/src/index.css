@@ -4,18 +4,36 @@
 
 @layer base {
   :root {
-    --text: #05060d;
-    --background: #f1f3fa;
-    --primary: #384fc8;
-    --secondary: #96a3e7;
-    --accent: #576de0;
+    --background: 253 253 253;
+    --primary: 0 39 136;
+    --text-primary: 0 0 0;
+    --text-secondary: 112 112 112;
+    --unresolved: 147 0 0;
+    --resolved: 0 120 12;
+    --open: 0 39 136;
+    --onhold: 191 93 2;
+    --navbar: 234 234 234;
+    --topbar: 240 240 240;
+    --card: 248 248 248;
+    --placeholder: 112 112 112;
+    --divider: 217 217 217;
+    --searchbar: 234 234 234;
   }
   .dark {
-    --text: #f0f1f9;
-    --background: #05070f;
-    --primary: #374fc8;
-    --secondary: #182568;
-    --accent: #1f36a8;
+    --background: 37 41 51;
+    --primary: 98 142 255;
+    --text-primary: 255 255 255;
+    --text-secondary: 221 221 221;
+    --unresolved: 250 0 0;
+    --resolved: 0 206 21;
+    --open: 98 142 255;
+    --onhold: 255 229 0;
+    --navbar: 35 38 49;
+    --topbar: 39 44 58;
+    --card: 44 48 61;
+    --placeholder: 112 112 112;
+    --divider: 35 38 49;
+    --searchbar: 35 38 49;
   }
 }
 
