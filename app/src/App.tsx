@@ -5,8 +5,7 @@ import useTheme from './hooks/useTheme';
 function App() {
 	const { isDark } = useTheme();
 	return (
-		<div
-			className={`w-full h-full ${isDark && 'dark'}`}>
+		<div className={`w-full h-full ${isDark && 'dark'}`}>
 			<RouterProvider router={router}></RouterProvider>
 		</div>
 	);
