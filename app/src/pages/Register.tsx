@@ -1,32 +1,33 @@
-import { BaseSyntheticEvent, FormEvent, SyntheticEvent, useState } from 'react';
-import Input from '../components/Input';
+import { FormEvent, useState } from 'react';
 import Logo from '../components/Logo';
 import { useNavigate } from 'react-router-dom';
 import { FaAngleLeft } from 'react-icons/fa6';
 import axios, { AxiosError } from 'axios';
-import { useForm } from 'react-hook-form';
 import isEmail from 'validator/lib/isEmail';
-
-interface FormData {
-	displayName: string;
-	email: string;
-	password: string;
+import FormInput from '../components/FormInput';
+import { isLength } from 'validator';
+interface InvalidFormInput {
+	displayName?: {
+		message: string;
+	};
+	email?: {
+		message: string;
+	};
+	password?: {
+		message: string;
+	};
 }
 
 function Register() {
 	const navigate = useNavigate();
-	const {
-		register,
-		formState: { errors },
-		handleSubmit,
-	} = useForm<FormData>();
+	const [displayName, setDisplayName] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 	const [message, setMessage] = useState('');
+	const [invalid, setInvalid] = useState<InvalidFormInput>({});
 
-	const [showPassword, setShowPassword] = useState(false);
-
-	async function handleRegister(values: FormData, event?: BaseSyntheticEvent) {
-		event?.preventDefault();
-		const { displayName, email, password } = values;
+	async function handleRegister(e: FormEvent<HTMLFormElement>) {
+		e.preventDefault();
 		try {
 			const req = await axios.post('/api/auth/register', {
 				displayName,
@@ -60,55 +61,74 @@ function Register() {
 				<div className='font-bold text-xl text-center'>Dashboard Kit</div>
 				<form
 					className='my-4 flex flex-col gap-1'
-					onSubmit={handleSubmit(handleRegister)}>
-					<div>Display Name</div>
-					<Input
-						{...register('displayName', {
-							required: true,
-						})}
+					onSubmit={handleRegister}>
+					<FormInput
+						label='Display name'
 						type='text'
 						placeholder='Display name'
-						className='w-full bg-searchbar focus:outline focus:outline-primary shadow-inner-xl placeholder:text-placeholder'
+						onChange={(e) => {
+							setDisplayName(e.target.value);
+						}}
 						required
 					/>
-					<div>Email</div>
-					<Input
-						{...register('email', {
-							required: true,
-							validate: (value: string) =>
-								isEmail(value) || 'Please enter valid email!',
-						})}
+					<FormInput
+						label='Email'
 						type='text'
 						placeholder='Email address'
-						className='w-full bg-searchbar focus:outline focus:outline-primary shadow-inner-xl placeholder:text-placeholder'
+						onChange={(e) => {
+							setEmail(e.target.value);
+						}}
+						validators={[isEmail]}
+						onValidate={(validation) => {
+							if (validation) {
+								// eslint-disable-next-line @typescript-eslint/no-unused-vars
+								const { email, ...rest } = invalid;
+								setInvalid(rest);
+							} else {
+								setInvalid({
+									email: { message: 'Please enter a valid email!' },
+									...invalid,
+								});
+							}
+						}}
 						required
 					/>
-					{errors.email && (
-						<div className='text-red-600'>{errors.email.message}</div>
+					{invalid.email && (
+						<div className='text-red-600 text-sm'>
+							{invalid.email.message}
+						</div>
 					)}
-					<div>Password</div>
-					<div className='w-full relative'>
-						<Input
-							{...register('password', {
-								required: true,
-								minLength: 8,
-								maxLength: 20
-							})}
-							type={showPassword ? 'text' : 'password'}
-							placeholder='Password'
-							className='w-full bg-searchbar focus:outline focus:outline-primary shadow-inner-xl placeholder:text-placeholder'
-							required
-						/>
-						<Input
-							type='checkbox'
-							className='absolute right-3 top-1/4 h-1/2'
-							onInput={() => {
-								setShowPassword(!showPassword);
-							}}
-						/>
-					</div>
-					{errors.password && (
-						<div className='text-red-600'>Password should be around 8 to 20 characters long</div>
+					<FormInput
+						label='Password'
+						type='password'
+						placeholder='Password'
+						onChange={(e) => setPassword(e.target.value)}
+						validators={() => {
+							const isValidLength = (password: string) =>
+								isLength(password, { min: 8, max: 20 }) ||
+								password.length === 0;
+							return [isValidLength];
+						}}
+						onValidate={(validation) => {
+							if (validation) {
+								// eslint-disable-next-line @typescript-eslint/no-unused-vars
+								const { password, ...rest } = invalid;
+								setInvalid(rest);
+							} else {
+								setInvalid({
+									password: {
+										message:
+											'Password should be around 8 to 20 characters long',
+									},
+									...invalid,
+								});
+							}
+						}}
+					/>
+					{invalid.password && (
+						<div className='text-red-600 text-sm'>
+							{invalid.password.message}
+						</div>
 					)}
 					<button
 						className={`font-bold block rounded-md w-full py-2 mt-4 bg-primary text-white`}
