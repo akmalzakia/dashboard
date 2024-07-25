@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import Logo from '../components/Logo';
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 import { FaAngleLeft } from 'react-icons/fa6';
 import axios, { AxiosError } from 'axios';
 import isEmail from 'validator/lib/isEmail';
@@ -29,13 +29,14 @@ function Register() {
 	async function handleRegister(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		try {
-			const req = await axios.post('/api/auth/register', {
+			const res = await axios.post('/api/auth/register', {
 				displayName,
 				email,
 				password,
 			});
 
-			setMessage(req.data.message);
+			setMessage(res.data.message);
+			navigate('/login', { state: { register: res.data.message } });
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				console.log(error.response?.data.error);
@@ -53,9 +54,9 @@ function Register() {
 				className={`w-full max-w-md lg:shadow-drop bg-card m-auto rounded-md py-2 px-5`}>
 				<button
 					className='text-primary text-sm font-bold flex items-center gap-1'
-					onClick={() => navigate(-1)}>
+					onClick={() => navigate('/login')}>
 					<FaAngleLeft />
-					<span>Go back</span>
+					<span>Login</span>
 				</button>
 				<Logo className='mx-auto my-4'></Logo>
 				<div className='font-bold text-xl text-center'>Dashboard Kit</div>

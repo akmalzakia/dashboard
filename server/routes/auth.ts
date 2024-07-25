@@ -52,6 +52,7 @@ router.post(
 			});
 
 			const savedUser = await user.save();
+			console.log(`user ${user.displayName} registered successfully`);
 			res.json({
 				message: 'User registered successfully',
 				userId: savedUser._id,
