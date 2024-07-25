@@ -131,7 +131,8 @@ function Register() {
 						</div>
 					)}
 					<button
-						className={`font-bold block rounded-md w-full py-2 mt-4 bg-primary text-white`}
+						className={`font-bold block rounded-md shadow-drop w-full py-2 mt-4 bg-primary text-white disabled:bg-text-secondary`}
+						disabled={!!invalid.email || !!invalid.password}
 						type='submit'>
 						Register
 					</button>

@@ -40,7 +40,7 @@ router.post(
 			const { email, displayName, password } = req.body;
 			const existingUser = await User.findOne({ email });
 			if (existingUser) {
-				return res.status(400).json({ error: 'email already exists' });
+				return res.status(400).json({ error: 'Email already exists' });
 			}
 
 			const salt = await bcrypt.genSalt(10);

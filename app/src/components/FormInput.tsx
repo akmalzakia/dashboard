@@ -1,5 +1,5 @@
-import { isArray } from 'lodash';
-import React, { ChangeEvent, useState } from 'react';
+import { debounce, isArray } from 'lodash';
+import React, { ChangeEvent, useMemo, useState } from 'react';
 
 interface FormInputProps
 	extends Pick<
@@ -25,6 +25,15 @@ function FormInput({
 	onValidate,
 }: FormInputProps) {
 	const [showPassword, setShowPassword] = useState(false);
+	const [invalid, setInvalid] = useState(false);
+
+	const debouncedValidation = debounce((ev: ChangeEvent<HTMLInputElement>) => {
+		if (!validators) return;
+		
+		const validation = validate(ev.target.value, validators);
+		setInvalid(!validation);
+		onValidate?.(validation);
+	}, 500);
 
 	function validate(
 		value: string,
@@ -54,14 +63,12 @@ function FormInput({
 								: 'password'
 							: type
 					}
-					className='bg-gray-100 rounded-md px-2 py-1 w-full bg-searchbar focus:outline focus:outline-primary shadow-inner-xl placeholder:text-placeholder'
+					className={`bg-gray-100 rounded-md px-2 py-1 w-full bg-searchbar focus:outline focus:outline-primary shadow-inner-xl placeholder:text-placeholder ${
+						invalid && 'outline outline-1 outline-red-600'
+					}`}
 					onChange={(e) => {
-						const validation =
-							!!validators && validate(e.target.value, validators);
-						if (validation) {
-							onChange?.(e);
-						}
-						onValidate?.(validation);
+						onChange?.(e);
+						debouncedValidation(e);
 					}}
 					placeholder={placeholder}
 					required={required}></input>
