@@ -15,7 +15,6 @@ export function formatDate(timestamp: number) {
 	const dateDifference = Math.floor(hourDifference / 24);
 	const monthDifference = Math.floor(dateDifference / 30);
 	const yearDifference = Math.floor(monthDifference / 12);
-	console.log(yearDifference);
 	if (yearDifference) {
 		return `${yearDifference > 1 ? yearDifference + 'years' : 'a year'} ago`;
 	} else if (monthDifference) {

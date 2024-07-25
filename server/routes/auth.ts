@@ -13,15 +13,15 @@ router.post(
 	'/login',
 	async (req: TypedRequestBody<{ email: string; password: string }>, res) => {
 		const { email, password } = req.body;
-		console.log(req);
 		const user = await User.findOne({ email });
-		if (!user) return res.status(400).send('Invalid email or password');
+		if (!user)
+			return res.status(400).send({ error: 'Invalid email or password' });
 		const validPassword = user.verifyPassword(password);
 		if (!validPassword)
-			return res.status(400).send('Invalid email or password');
+			return res.status(400).send({ error: 'Invalid email or password' });
 
-		const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || '');
-
+		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || '');
+		console.log(token);
 		res.send({ token });
 	}
 );
