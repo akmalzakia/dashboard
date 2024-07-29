@@ -2,7 +2,10 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import authRoutes from './routes/auth';
+import userRoutes from './routes/user';
+
 import 'dotenv/config';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const PORT = 3001;
@@ -17,8 +20,11 @@ mongoose
 	});
 
 app.use(express.json());
-app.use('/api/auth', authRoutes);
 app.use(cors());
+app.use(cookieParser());
+
+app.use('/api', userRoutes);
+app.use('/api/auth', authRoutes);
 
 app.listen(PORT, () => {
 	console.log(`Server running on ${PORT}`);

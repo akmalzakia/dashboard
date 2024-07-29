@@ -19,10 +19,16 @@ router.post(
 		const validPassword = user.verifyPassword(password);
 		if (!validPassword)
 			return res.status(400).send({ error: 'Invalid email or password' });
-
-		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || '');
-		console.log(token);
-		res.send({ token });
+		const token = jwt.sign(
+			{ userId: user._id },
+			process.env.JWT_SECRET || ''
+		);
+		res.cookie('accessToken', token, { httpOnly: true, secure: true });
+		const { password: userPassword, ...returnedUser } = user.toObject();
+		return res.json({
+			message: `User ${user.displayName} logged in`,
+			user: returnedUser,
+		});
 	}
 );
 

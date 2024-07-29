@@ -1,12 +1,19 @@
 import { FormEvent, useState } from 'react';
-import Input from '../components/Input';
 import Logo from '../components/Logo';
 import { NavLink, useNavigate } from 'react-router-dom';
 import FormInput from '../components/FormInput';
 import axios, { AxiosError } from 'axios';
+import useUser from '../hooks/useUser';
+import { User } from '../context/userContext';
+
+interface LoginResponse {
+	message: string;
+	user: User;
+}
 
 function Login() {
 	const navigate = useNavigate();
+	const { user, setUser } = useUser();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [message, setMessage] = useState('');
@@ -14,13 +21,18 @@ function Login() {
 	async function handleLogin(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		try {
-			const res = await axios.post('/api/auth/login', {
-				email,
-				password,
-			});
+			const res = await axios.post<LoginResponse>(
+				'/api/auth/login',
+				{
+					email,
+					password,
+				},
+				{ withCredentials: true }
+			);
+			console.log(res);
 			setMessage(res.data.message);
-			console.log(res.data.message);
-			navigate('/', { state: { token: res.data.token } });
+			setUser(res.data.user);
+			navigate('/');
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				console.log(error.response?.data.error);

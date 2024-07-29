@@ -3,11 +3,16 @@ import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard/Dashboard';
 import Overview from '../pages/Dashboard/Overview';
 import Register from '../pages/Register';
+import ProtectedRoute from '../pages/ProtectedRoute';
 
 const router = createBrowserRouter([
 	{
 		path: '/',
-		element: <Dashboard />,
+		element: (
+			<ProtectedRoute>
+				<Dashboard />
+			</ProtectedRoute>
+		),
 		children: [
 			{
 				index: true,

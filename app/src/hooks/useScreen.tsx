@@ -4,7 +4,7 @@ import { ScreenContext } from '../context/screenContext';
 const useScreen = () => {
 	const context = useContext(ScreenContext);
 	if (!context) {
-		throw new Error('useThemeContext must be used within a Provider');
+		throw new Error('ScreenContext must be used within a Provider');
 	}
 
 	return context;
