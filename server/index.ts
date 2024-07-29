@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/user';
+import ticketRoutes from './routes/tickets';
 
 import 'dotenv/config';
 import cookieParser from 'cookie-parser';
@@ -24,6 +25,7 @@ app.use(cors());
 app.use(cookieParser());
 
 app.use('/api', userRoutes);
+app.use('/api', ticketRoutes);
 app.use('/api/auth', authRoutes);
 
 app.listen(PORT, () => {
