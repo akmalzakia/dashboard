@@ -9,9 +9,19 @@ type TicketWithIdRequest<Req = any, Q = qs.ParsedQs> = JwtRequest<
 	Q
 >;
 
-async function getTickets(req: TicketRequest, res: Response) {
+async function getTickets(
+	req: TicketRequest<{}, { limit?: number; status?: string }>,
+	res: Response
+) {
 	try {
-		const tickets = await Ticket.find().populate({
+		const qs = req.query;
+		const filters = {
+			status: qs.status ?? undefined,
+		};
+		const tickets = await Ticket.find(filters, null, {
+			limit: qs.limit ?? 0,
+			lean: false,
+		}).populate({
 			path: 'createdBy',
 			select: 'id displayName email',
 		});
