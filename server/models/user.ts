@@ -13,7 +13,7 @@ export interface ISimpleUser {
 
 export interface IUser extends ISimpleUser {
 	password: string;
-	tokens: IToken[];
+	tokens?: IToken[];
 	isAdmin: boolean;
 }
 
