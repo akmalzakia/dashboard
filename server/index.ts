@@ -1,9 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import authRoutes from './routes/auth';
-import userRoutes from './routes/user';
-import ticketRoutes from './routes/tickets';
+import routes from './routes/router';
 
 import 'dotenv/config';
 import cookieParser from 'cookie-parser';
@@ -24,9 +22,7 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
-app.use('/api', userRoutes);
-app.use('/api', ticketRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/api', routes);
 
 app.listen(PORT, () => {
 	console.log(`Server running on ${PORT}`);

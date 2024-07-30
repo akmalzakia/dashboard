@@ -1,10 +1,6 @@
-import { Request, RequestHandler } from 'express';
+import { RequestHandler } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-
-export interface JwtRequest extends Request {
-	userId?: string;
-}
-
+import { JwtRequest } from '../utils/types';
 interface UserJwt extends JwtPayload {
 	userId: string;
 }
