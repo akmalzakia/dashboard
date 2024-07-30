@@ -2,12 +2,20 @@ import { Response } from 'express';
 import { JwtRequest } from '../utils/types';
 import Ticket, { ITicket } from '../models/ticket';
 
-async function getTickets(req: JwtRequest, res: Response) {
+type TicketRequest<Req = any, Q = qs.ParsedQs> = JwtRequest<{}, Req, Q>;
+type TicketWithIdRequest<Req = any, Q = qs.ParsedQs> = JwtRequest<
+	{ id?: string },
+	Req,
+	Q
+>;
+
+async function getTickets(req: TicketRequest, res: Response) {
 	try {
 		const tickets = await Ticket.find().populate({
 			path: 'createdBy',
 			select: 'id displayName email',
 		});
+
 		res.status(200).json({
 			tickets,
 		});
@@ -19,7 +27,7 @@ async function getTickets(req: JwtRequest, res: Response) {
 	}
 }
 
-async function getTicketById(req: JwtRequest, res: Response) {
+async function getTicketById(req: TicketWithIdRequest, res: Response) {
 	try {
 		const ticket = await Ticket.findById(req.params.id).populate({
 			path: 'createdBy',
@@ -36,7 +44,10 @@ async function getTicketById(req: JwtRequest, res: Response) {
 	}
 }
 
-async function addTicket(req: JwtRequest<{ ticket: ITicket }>, res: Response) {
+async function addTicket(
+	req: TicketRequest<{ ticket: ITicket }>,
+	res: Response
+) {
 	try {
 		const { id, title, description } = req.body.ticket;
 		const createdBy = req.userId;
@@ -61,7 +72,7 @@ async function addTicket(req: JwtRequest<{ ticket: ITicket }>, res: Response) {
 }
 
 async function updateTicket(
-	req: JwtRequest<{ ticket: ITicket }>,
+	req: TicketWithIdRequest<{ ticket: ITicket }>,
 	res: Response
 ) {
 	try {
@@ -100,10 +111,7 @@ async function updateTicket(
 	}
 }
 
-async function deleteTicket(
-	req: JwtRequest<{ ticket: ITicket }>,
-	res: Response
-) {
+async function deleteTicket(req: TicketWithIdRequest, res: Response) {
 	try {
 		const ticket = await Ticket.findByIdAndDelete(req.params.id).populate({
 			path: 'createdBy',
