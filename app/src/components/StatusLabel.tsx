@@ -1,5 +1,5 @@
 import { startCase } from 'lodash';
-import { Status } from '../enums/enums';
+import { Status } from '../utils/enums';
 import { statusVariantClasses } from '../utils/helper';
 
 interface StatusLabelProps {

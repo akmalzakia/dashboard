@@ -1,30 +1,47 @@
-import { useState } from 'react';
 import Card from '../../../components/Card';
-import { unresolvedTicketsData } from '../../../mocks/data';
 import { formatDate } from '../../../utils/helper';
+import { getTicket } from '../../../api/Ticket';
+import { Status } from '../../../utils/enums';
+import { useQuery } from '@tanstack/react-query';
+import Loader from '../../../components/Loader';
 
 interface UnresolvedTicketsCardProps {
 	className?: string;
 }
 
 function UnresolvedTicketsCard({ className }: UnresolvedTicketsCardProps) {
-	const [data, setData] = useState(unresolvedTicketsData);
+	const { isLoading, data: tickets } = useQuery({
+		queryKey: ['unresolved tickets'],
+		queryFn: () => getTicket(Status.Unresolved),
+	});
+
+	function getDate(date: string) {
+		const d = new Date(date).getTime();
+		return formatDate(d);
+	}
+
 	return (
-		<Card className={`${className} p-0 text-text-primary`}>
+		<Card className={`${className} p-0 text-text-primary flex flex-col`}>
 			<div className='font-bold mb-3 p-2'>Unresolved Tickets</div>
-			{data.map((d) => (
-				<div
-					key={d.id}
-					className='flex flex-col gap-1 border-t-[1.5px] border-t-divider p-2'>
-					<div className='flex items-center gap-1'>
-						<div className='text-sm font-bold'>{d.id}</div>
-            <div className='text-sm line-clamp-1'>{d.title}</div>
+			{isLoading ? (
+				<Loader size={30} className='m-auto' />
+			) : (
+				tickets &&
+				tickets.map((ticket) => (
+					<div
+						key={ticket.id}
+						className='flex flex-col gap-1 border-t-[1.5px] border-t-divider p-2'>
+						<div className='flex items-center gap-2'>
+							<div className='text-sm font-bold'>{ticket.id}</div>
+							<div className='text-sm line-clamp-1'>{ticket.title}</div>
+						</div>
+						<div className='self-start text-xs text-text-secondary line-clamp-1'>
+							by {ticket.createdBy.displayName}, created{' '}
+							{getDate(ticket.createdAt)}
+						</div>
 					</div>
-					<div className='self-start text-xs text-text-secondary line-clamp-1'>
-						by {d.createdBy.name}, created {formatDate(d.timestamp)}
-					</div>
-				</div>
-			))}
+				))
+			)}
 		</Card>
 	);
 }

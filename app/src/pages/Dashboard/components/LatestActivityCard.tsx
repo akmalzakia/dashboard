@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { latestActivityData, LatestActivityType } from '../../../mocks/data';
 import Card from '../../../components/Card';
 import StatusLabel from '../../../components/StatusLabel';
-import { Status } from '../../../enums/enums';
+import { Status } from '../../../utils/enums';
 import { formatDate } from '../../../utils/helper';
 
 interface LatestActivityCardProps {

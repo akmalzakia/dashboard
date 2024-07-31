@@ -1,5 +1,5 @@
 import Card from '../../../components/Card';
-import { Status } from '../../../enums/enums';
+import { Status } from '../../../utils/enums';
 import { startCase } from 'lodash';
 import {
 	loaderVariantClasses,

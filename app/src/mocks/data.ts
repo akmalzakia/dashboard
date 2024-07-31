@@ -1,4 +1,4 @@
-import { Status } from "../enums/enums";
+import { Status } from "../utils/enums";
 
 export const chartsData = {
   January: {

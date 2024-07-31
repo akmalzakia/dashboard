@@ -1,5 +1,5 @@
 import Card from '../../components/Card';
-import { Status } from '../../enums/enums';
+import { Status } from '../../utils/enums';
 import ChartElement from './components/ChartElement';
 import LatestActivityCard from './components/LatestActivityCard';
 import StatusCard from './components/StatusCard';
@@ -8,7 +8,7 @@ import UnresolvedTicketsCard from './components/UnresolvedTicketsCard';
 
 function Overview() {
 	return (
-		<div className='h-full w-full p-5 flex flex-col gap-4'>
+		<div className='w-full p-5 flex flex-col gap-4'>
 			<div className='flex gap-4'>
 				<StatusCard status={Status.Unresolved} className='flex-1' />
 				<StatusCard status={Status.Resolved} className='flex-1' />
