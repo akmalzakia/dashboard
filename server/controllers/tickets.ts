@@ -9,26 +9,57 @@ type TicketWithIdRequest<Req = any, Q = qs.ParsedQs> = JwtRequest<
 	Q
 >;
 
+enum TicketQueryFields {
+	TotalItems = 'totalItems',
+	Tickets = 'tickets',
+}
+
+/* need to limit the number of tickets fetched (implement pagination!)
+ api should return smth like this 
+ {
+	...
+	totalItems: 99
+	page: 1,
+	limit: 10,
+	next: link to next,
+	prev: link to prev,
+ }
+*/
 async function getTickets(
-	req: TicketRequest<{}, { limit?: number; status?: string }>,
+	req: TicketRequest<{}, { limit?: number; status?: string; fields?: string }>,
 	res: Response
 ) {
 	try {
 		const qs = req.query;
-		const filters = {
-			status: qs.status ?? undefined,
-		};
-		const tickets = await Ticket.find(filters, null, {
-			limit: qs.limit ?? 0,
-			lean: false,
-		}).populate({
-			path: 'createdBy',
-			select: 'id displayName email',
-		});
 
-		res.status(200).json({
-			tickets,
-		});
+		let returnData;
+
+		const statusFilter = qs.status ? { status: qs.status } : {};
+		const fields = qs.fields ? qs.fields.split(',') : null;
+
+		if (!fields || fields.includes(TicketQueryFields.Tickets)) {
+			const tickets = await Ticket.find({ ...statusFilter }, null, {
+				limit: qs.limit ?? 0,
+				lean: false,
+			}).populate({
+				path: 'createdBy',
+				select: 'id displayName email',
+			});
+			returnData = {
+				...returnData,
+				tickets,
+			};
+		}
+
+		if (!fields || fields.includes(TicketQueryFields.TotalItems)) {
+			const totalTickets = await Ticket.countDocuments({ ...statusFilter });
+			returnData = {
+				...returnData,
+				totalItems: totalTickets,
+			};
+		}
+
+		res.status(200).json(returnData);
 	} catch (error) {
 		console.error(error);
 		res.status(400).json({
