@@ -5,6 +5,13 @@ export const statusVariantClasses = {
 	onHold: 'border-onhold text-onhold',
 };
 
+export const loaderVariantClasses = {
+	unresolved: '!border-y-unresolved',
+	resolved: '!border-y-resolved',
+	open: '!border-y-open',
+	onHold: '!border-y-onhold',
+};
+
 export function formatDate(timestamp: number) {
 	const now = Date.now();
 	const rel = now - timestamp;

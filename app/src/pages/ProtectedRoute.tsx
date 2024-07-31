@@ -1,7 +1,7 @@
-import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import useUser from '../hooks/useUser';
 import { useEffect } from 'react';
-import axios, { AxiosError, CancelTokenSource } from 'axios';
+import axios, { CancelTokenSource } from 'axios';
 
 interface Props extends React.PropsWithChildren {
 	redirectPath?: string;

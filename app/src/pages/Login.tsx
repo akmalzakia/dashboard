@@ -13,7 +13,7 @@ interface LoginResponse {
 
 function Login() {
 	const navigate = useNavigate();
-	const { user, setUser } = useUser();
+	const { setUser } = useUser();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [message, setMessage] = useState('');
@@ -29,7 +29,6 @@ function Login() {
 				},
 				{ withCredentials: true }
 			);
-			console.log(res);
 			setMessage(res.data.message);
 			setUser(res.data.user);
 			navigate('/');
