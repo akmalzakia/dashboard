@@ -26,15 +26,26 @@ enum TicketQueryFields {
  }
 */
 async function getTickets(
-	req: TicketRequest<{}, { limit?: number; status?: string; fields?: string }>,
+	req: TicketRequest<
+		{},
+		{ limit?: number; status?: string; fields?: string; assignee?: string }
+	>,
 	res: Response
 ) {
 	try {
 		const qs = req.query;
 
-		let returnData;
+		let returnData: Record<string, any>;
 
-		const statusFilter = qs.status ? { status: qs.status } : {};
+		let statusFilter: Record<string, any>;
+
+		statusFilter = qs.status
+			? { ...statusFilter, status: qs.status }
+			: statusFilter;
+
+		statusFilter = qs.assignee
+			? { ...statusFilter, assignee: qs.assignee }
+			: statusFilter;
 		const fields = qs.fields ? qs.fields.split(',') : null;
 
 		if (!fields || fields.includes(TicketQueryFields.Tickets)) {
@@ -98,7 +109,7 @@ async function addTicket(
 			createdBy,
 			title,
 			description,
-			createdAt
+			createdAt,
 		});
 
 		ticket.save();
