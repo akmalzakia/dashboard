@@ -92,11 +92,13 @@ async function addTicket(
 	try {
 		const { id, title, description } = req.body.ticket;
 		const createdBy = req.userId;
+		const createdAt = new Date();
 		const ticket = await Ticket.create({
 			id,
 			createdBy,
 			title,
 			description,
+			createdAt
 		});
 
 		ticket.save();
@@ -240,5 +242,5 @@ export const TicketController = {
 	addTicket,
 	updateTicket,
 	deleteTicket,
-	getMonthlyTotalTickets
+	getMonthlyTotalTickets,
 };

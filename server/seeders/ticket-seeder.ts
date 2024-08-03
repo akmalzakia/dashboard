@@ -68,12 +68,14 @@ function generateTickets(limit: number, listOfAdmins: string[]) {
 		const description = faker.hacker.phrase();
 		const status = statusList[randomInt(statusList.length)];
 		const createdBy = listOfAdmins[randomInt(0, listOfAdmins.length)];
+		const createdAt = new Date(2024, randomInt(0, 12), randomInt(1, 29));
 		const ticket = {
 			id,
 			title,
 			description,
 			status,
 			createdBy,
+			createdAt
 		};
 		console.log(ticket);
 		tickets.push(ticket);

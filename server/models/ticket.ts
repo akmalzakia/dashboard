@@ -12,6 +12,7 @@ export interface ITicket {
 	id: string;
 	title: string;
 	createdBy: ISimpleUser;
+	createdAt: Date;
 	status: TicketStatus;
 	description: string;
 }
@@ -40,6 +41,10 @@ const ticketSchema = new Schema<ITicket, Model<ITicket>>(
 		description: {
 			type: String,
 			required: true,
+		},
+		createdAt: {
+			type: Date,
+			default: Date.now(),
 		},
 	},
 	{ timestamps: true }
