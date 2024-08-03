@@ -15,6 +15,7 @@ export interface ITicket {
 	createdAt: Date;
 	status: TicketStatus;
 	description: string;
+	assignee: ISimpleUser;
 }
 
 const ticketSchema = new Schema<ITicket, Model<ITicket>>(
@@ -45,6 +46,10 @@ const ticketSchema = new Schema<ITicket, Model<ITicket>>(
 		createdAt: {
 			type: Date,
 			default: Date.now(),
+		},
+		assignee: {
+			type: Types.ObjectId,
+			ref: 'User',
 		},
 	},
 	{ timestamps: true }
