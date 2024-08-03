@@ -17,11 +17,12 @@ export async function getTicketStatusCount(status: Status) {
 	}
 }
 
-export async function getTicket(status?: Status) {
+export async function getTicket(status?: Status, limit?: number) {
 	try {
 		const res = await axios.get<{ tickets: Ticket[] }>('/api/tickets', {
 			params: {
 				status,
+				limit,
 			},
 		});
 		return res.data.tickets;

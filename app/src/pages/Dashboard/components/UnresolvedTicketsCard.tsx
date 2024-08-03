@@ -12,7 +12,7 @@ interface UnresolvedTicketsCardProps {
 function UnresolvedTicketsCard({ className }: UnresolvedTicketsCardProps) {
 	const { isLoading, data: tickets } = useQuery({
 		queryKey: ['unresolved tickets'],
-		queryFn: () => getTicket(Status.Unresolved),
+		queryFn: () => getTicket(Status.Unresolved, 5),
 	});
 
 	function getDate(date: string) {
