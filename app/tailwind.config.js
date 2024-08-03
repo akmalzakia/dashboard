@@ -18,7 +18,7 @@ export default {
         'primary': 'rgb(var(--primary))',
         'text-primary': 'rgb(var(--text-primary))',
         'text-secondary': 'rgb(var(--text-secondary))',
-        'unresolved': 'rgb(var(--unresolved))',
+        'onprogress': 'rgb(var(--onprogress))',
         'resolved': 'rgb(var(--resolved))',
         'open': 'rgb(var(--open))',
         'onhold': 'rgb(var(--onhold))',

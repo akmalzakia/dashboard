@@ -34,7 +34,7 @@ export async function getTicket(status?: Status, limit?: number) {
 export async function getMonthlyTicketCount() {
 	try {
 		const res = await axios.get<{
-			unresolved: number[];
+			onProgress: number[];
 			onHold: number[];
 			open: number[];
 			resolved: number[];

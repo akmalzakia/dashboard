@@ -1,5 +1,5 @@
 export enum Status {
-  Unresolved = 'unresolved',
+  OnProgress = 'onProgress',
   Resolved = 'resolved',
   Open = 'open',
   OnHold = 'onHold'

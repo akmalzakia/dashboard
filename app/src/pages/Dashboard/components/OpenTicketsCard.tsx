@@ -5,14 +5,14 @@ import { Status } from '../../../utils/enums';
 import { useQuery } from '@tanstack/react-query';
 import Loader from '../../../components/Loader';
 
-interface UnresolvedTicketsCardProps {
+interface OpenTicketsCardProps {
 	className?: string;
 }
 
-function UnresolvedTicketsCard({ className }: UnresolvedTicketsCardProps) {
+function OpenTicketsCard({ className }: OpenTicketsCardProps) {
 	const { isLoading, data: tickets } = useQuery({
-		queryKey: ['unresolved tickets'],
-		queryFn: () => getTicket(Status.Unresolved, 5),
+		queryKey: ['Open tickets'],
+		queryFn: () => getTicket(Status.Open, 5),
 	});
 
 	function getDate(date: string) {
@@ -22,7 +22,7 @@ function UnresolvedTicketsCard({ className }: UnresolvedTicketsCardProps) {
 
 	return (
 		<Card className={`${className} p-0 text-text-primary flex flex-col`}>
-			<div className='font-bold mb-3 p-2'>Unresolved Tickets</div>
+			<div className='font-bold mb-3 p-2'>Open Tickets</div>
 			{isLoading ? (
 				<Loader size={30} className='m-auto' />
 			) : (
@@ -46,4 +46,4 @@ function UnresolvedTicketsCard({ className }: UnresolvedTicketsCardProps) {
 	);
 }
 
-export default UnresolvedTicketsCard;
+export default OpenTicketsCard;

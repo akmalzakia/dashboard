@@ -2,7 +2,7 @@ import mongoose, { Model, Schema, Types } from 'mongoose';
 import { ISimpleUser } from './user';
 
 export enum TicketStatus {
-	Unresolved = 'unresolved',
+	OnProgress = 'onprogress',
 	Resolved = 'resolved',
 	Open = 'open',
 	OnHold = 'onHold',

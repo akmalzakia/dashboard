@@ -1,12 +1,12 @@
 export const statusVariantClasses = {
-	unresolved: 'border-unresolved text-unresolved',
+	onProgress: 'border-onprogress text-onprogress',
 	resolved: 'border-resolved text-resolved',
 	open: 'border-open text-open',
 	onHold: 'border-onhold text-onhold',
 };
 
 export const loaderVariantClasses = {
-	unresolved: '!border-y-unresolved',
+	onProgress: '!border-y-onprogress',
 	resolved: '!border-y-resolved',
 	open: '!border-y-open',
 	onHold: '!border-y-onhold',

@@ -56,9 +56,9 @@ function ChartElement() {
 					],
 					datasets: [
 						{
-							label: 'Unresolved',
-							data: data.unresolved,
-							borderColor: isDark ? 'rgb(250 0 0)' : 'rgb(147 0 0)',
+							label: 'On Progress',
+							data: data.onProgress,
+							borderColor: isDark ? 'rgb(255 229 0)' : 'rgb(191 93 2)',
 						},
 						{
 							label: 'Resolved',
@@ -73,7 +73,7 @@ function ChartElement() {
 						{
 							label: 'On Hold',
 							data: data.onHold,
-							borderColor: isDark ? 'rgb(255 229 0)' : 'rgb(191 93 2)',
+							borderColor: isDark ? 'rgb(250 0 0)' : 'rgb(147 0 0)',
 						},
 					],
 				},

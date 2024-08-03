@@ -121,7 +121,7 @@ export const latestActivityData: LatestActivityType[] = [
     },
     changes: {
       status: {
-        from: Status.Unresolved,
+        from: Status.OnProgress,
         to: Status.Resolved
       }
     }
@@ -135,7 +135,7 @@ export const latestActivityData: LatestActivityType[] = [
     },
     changes: {
       status: {
-        from: Status.Unresolved,
+        from: Status.OnProgress,
         to: Status.Open
       }
     }
