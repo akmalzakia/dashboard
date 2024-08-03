@@ -4,6 +4,7 @@ import useTheme from './hooks/useTheme';
 import { ScreenProvider } from './context/screenContext';
 import { UserProvider } from './context/userContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ function App() {
 						<RouterProvider router={router}></RouterProvider>
 					</UserProvider>
 				</ScreenProvider>
+				<ReactQueryDevtools initialIsOpen={false} />
 			</QueryClientProvider>
 		</div>
 	);
