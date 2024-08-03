@@ -29,3 +29,17 @@ export async function getTicket(status?: Status) {
 		console.log(error);
 	}
 }
+
+export async function getMonthlyTicketCount() {
+	try {
+		const res = await axios.get<{
+			unresolved: number[];
+			onHold: number[];
+			open: number[];
+			resolved: number[];
+		}>('/api/tickets/monthlyTotal');
+		return res.data;
+	} catch (error) {
+		console.log(error);
+	}
+}

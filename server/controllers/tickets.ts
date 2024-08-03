@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { JwtRequest } from '../utils/types';
-import Ticket, { ITicket } from '../models/ticket';
+import Ticket, { ITicket, TicketStatus } from '../models/ticket';
 
 type TicketRequest<Req = any, Q = qs.ParsedQs> = JwtRequest<{}, Req, Q>;
 type TicketWithIdRequest<Req = any, Q = qs.ParsedQs> = JwtRequest<
@@ -169,10 +169,76 @@ async function deleteTicket(req: TicketWithIdRequest, res: Response) {
 	}
 }
 
+async function getMonthlyTotalTickets(req: TicketRequest, res: Response) {
+	try {
+		const total: { _id: { status: TicketStatus }; count: number[] }[] =
+			await Ticket.aggregate([
+				{
+					$densify: {
+						field: 'createdAt',
+						partitionByFields: ['status'],
+						range: {
+							step: 1,
+							unit: 'month',
+							bounds: [
+								new Date('2024-01-1T00:00:00.000Z'),
+								new Date('2024-12-31T08:00:00.000Z'),
+							],
+						},
+					},
+				},
+			])
+				.group({
+					_id: {
+						status: '$status',
+						month: {
+							$month: '$createdAt',
+						},
+					},
+					tickets: {
+						$push: '$$ROOT',
+					},
+				})
+				.sort({
+					'_id.status': 1,
+					'_id.month': 1,
+				})
+				.group({
+					_id: {
+						status: '$_id.status',
+					},
+					count: {
+						$push: {
+							$size: {
+								$filter: {
+									input: '$tickets',
+									as: 'ticket',
+									cond: {
+										$gte: ['$$ticket._id', null],
+									},
+								},
+							},
+						},
+					},
+				});
+		const totalObject = total.reduce((acc, obj) => {
+			return { ...acc, [obj._id.status]: obj.count };
+		}, {});
+
+		res.status(200).json(totalObject);
+	} catch (error) {
+		console.error(error);
+		res.status(400).json({
+			message: 'Failed to get monthly total tickets',
+		});
+	}
+}
+
 export const TicketController = {
 	getTickets,
 	getTicketById,
 	addTicket,
 	updateTicket,
 	deleteTicket,
+	getMonthlyTotalTickets
 };

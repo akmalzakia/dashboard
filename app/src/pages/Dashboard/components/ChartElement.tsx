@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
-import { chartData } from '../../../mocks/data';
+import { useEffect, useRef } from 'react';
 import {
 	Chart,
 	LineController,
@@ -12,6 +11,8 @@ import {
 	Tooltip,
 } from 'chart.js';
 import useTheme from '../../../hooks/useTheme';
+import { useQuery } from '@tanstack/react-query';
+import { getMonthlyTicketCount } from '../../../api/Ticket';
 
 Chart.register(
 	LineController,
@@ -27,11 +28,15 @@ Chart.register(
 function ChartElement() {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const chartRef = useRef<Chart>(null);
-	const [data, setData] = useState(chartData);
 	const { isDark } = useTheme();
 
+	const { data } = useQuery({
+		queryKey: ['monthlyTicket'],
+		queryFn: async () => await getMonthlyTicketCount(),
+	});
+
 	useEffect(() => {
-		if (canvasRef.current) {
+		if (canvasRef.current && data) {
 			chartRef.current = new Chart(canvasRef.current, {
 				type: 'line',
 				data: {
@@ -122,7 +127,7 @@ function ChartElement() {
 			}
 		};
 	}, [isDark, data]);
-	
+
 	return <canvas aria-label='Chart' role='img' ref={canvasRef}></canvas>;
 }
 
