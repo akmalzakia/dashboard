@@ -12,7 +12,7 @@ interface OpenTicketsCardProps {
 function OpenTicketsCard({ className }: OpenTicketsCardProps) {
 	const { isLoading, data: tickets } = useQuery({
 		queryKey: ['Open tickets'],
-		queryFn: () => getTicket(Status.Open, 5),
+		queryFn: () => getTicket({ status: Status.Open, limit: 5 }),
 	});
 
 	function getDate(date: string) {

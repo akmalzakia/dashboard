@@ -3,43 +3,49 @@ import Logo from '../components/Logo';
 import { NavLink, useNavigate } from 'react-router-dom';
 import FormInput from '../components/FormInput';
 import axios, { AxiosError } from 'axios';
-import useUser from '../hooks/useUser';
 import { User } from '../context/userContext';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface LoginResponse {
 	message: string;
 	user: User;
 }
 
+interface Credentials {
+	email: string;
+	password: string;
+}
+
 function Login() {
 	const navigate = useNavigate();
-	const { setUser } = useUser();
+	const queryClient = useQueryClient();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [message, setMessage] = useState('');
 
-	async function handleLogin(e: FormEvent<HTMLFormElement>) {
-		e.preventDefault();
-		try {
-			const res = await axios.post<LoginResponse>(
-				'/api/auth/login',
-				{
-					email,
-					password,
-				},
-				{ withCredentials: true }
-			);
-			setMessage(res.data.message);
-			setUser(res.data.user);
-			navigate('/');
-		} catch (error) {
+	const loginMutation = useMutation({
+		mutationFn: (credentials: Credentials) => {
+			return axios.post<LoginResponse>('/api/auth/login', credentials, {
+				withCredentials: true,
+			});
+		},
+		onError: (error) => {
 			if (error instanceof AxiosError) {
 				console.log(error.response?.data.error);
 				setMessage(error.response?.data.error);
 			} else {
 				console.log(error);
 			}
-		}
+		},
+		onSuccess: (res) => {
+			queryClient.setQueryData(['user'], res.data.user);
+			navigate('/');
+		},
+	});
+
+	async function handleLogin(e: FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		loginMutation.mutate({ email, password });
 	}
 
 	return (

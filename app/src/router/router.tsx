@@ -3,15 +3,15 @@ import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard/Dashboard';
 import Overview from '../pages/Dashboard/Overview';
 import Register from '../pages/Register';
-import ProtectedRoute from '../pages/ProtectedRoute';
+import { UserProvider } from '../context/userContext';
 
 const router = createBrowserRouter([
 	{
 		path: '/',
 		element: (
-			<ProtectedRoute>
+			<UserProvider>
 				<Dashboard />
-			</ProtectedRoute>
+			</UserProvider>
 		),
 		children: [
 			{

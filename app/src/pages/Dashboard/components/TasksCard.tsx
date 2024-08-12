@@ -2,23 +2,21 @@ import Card from '../../../components/Card';
 import { formatDate } from '../../../utils/helper';
 import StatusLabel from '../../../components/StatusLabel';
 import { getTicket } from '../../../api/Ticket';
-import useUser from '../../../hooks/useUser';
 import { useQuery } from '@tanstack/react-query';
+import useUser from '../../../hooks/useUser';
 
 interface TasksCardProps {
 	className?: string;
 }
 
 function TasksCard({ className }: TasksCardProps) {
-	const { user } = useUser();
+	const user = useUser();
 	const { data: tickets } = useQuery({
-		queryKey: ['Tasks'],
+		queryKey: ['tasks'],
 		queryFn: async () => {
-			if (!user) return null;
-			const res = await getTicket(undefined, 5, user._id);
+			const res = await getTicket({ limit: 5, assignee: user._id });
 			return res;
 		},
-		enabled: !!user,
 	});
 
 	function getDate(date: string) {

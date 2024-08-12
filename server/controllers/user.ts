@@ -6,9 +6,7 @@ async function getCurrentUser(req: JwtRequest, res: Response) {
 	try {
 		const userId = req.userId;
 		const user = (await User.findById(userId).select('-password')).toObject();
-		res.send({
-			user,
-		});
+		res.send(user);
 	} catch (error) {
 		console.error(error);
 	}

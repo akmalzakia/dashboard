@@ -1,5 +1,8 @@
-import { createContext, PropsWithChildren, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { createContext, PropsWithChildren } from 'react';
 import { Nullish } from 'utility-types';
+import { getCurrentUser } from '../api/User';
+import { Navigate } from 'react-router-dom';
 
 export interface User {
 	_id: string;
@@ -8,25 +11,35 @@ export interface User {
 	isAdmin: boolean;
 }
 
-export interface UserContextProps {
-	user?: User;
-	setUser: (user: User) => void;
+interface UserProviderProps extends PropsWithChildren {
+	redirectPath?: string;
 }
 
-export const UserContext = createContext<UserContextProps | Nullish>(null);
-export function UserProvider({ children }: PropsWithChildren) {
-	const [user, setUser] = useState<User | Nullish>(null);
+export const UserContext = createContext<User | Nullish>(null);
+export function UserProvider({
+	redirectPath = '/login',
+	children,
+}: UserProviderProps) {
+	const currentUser = useQuery({
+		queryKey: ['user'],
+		queryFn: async () => await getCurrentUser(),
+		retry: false,
+	});
 
-	if (user) {
+	if (currentUser.isLoading) {
+		return <div>loading...</div>;
+	}
+
+	if (currentUser.isError) {
 		return (
-			<UserContext.Provider value={{ user, setUser }}>
-				{children}
-			</UserContext.Provider>
+			<>
+				<Navigate to={redirectPath} replace />
+			</>
 		);
 	}
 
 	return (
-		<UserContext.Provider value={{ setUser }}>
+		<UserContext.Provider value={currentUser.data}>
 			{children}
 		</UserContext.Provider>
 	);

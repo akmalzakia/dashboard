@@ -55,6 +55,9 @@ async function getTickets(
 			}).populate({
 				path: 'createdBy',
 				select: 'id displayName email',
+			}).populate({
+				path: 'assignee',
+				select: 'id displayName email'
 			});
 			returnData = {
 				...returnData,

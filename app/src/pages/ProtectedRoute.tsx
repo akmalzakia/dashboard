@@ -1,51 +1,29 @@
-import { Outlet, useNavigate } from 'react-router-dom';
-import useUser from '../hooks/useUser';
-import { useEffect } from 'react';
-import axios, { CancelTokenSource } from 'axios';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getCurrentUser } from '../api/User';
 
 interface Props extends React.PropsWithChildren {
 	redirectPath?: string;
 }
 
 const ProtectedRoute = ({ redirectPath = '/login', children }: Props) => {
-	const { user, setUser } = useUser();
-	const navigate = useNavigate();
+	const queryClient = useQueryClient();
+	const isLogged = queryClient.getQueryData(['user']);
 
-	useEffect(() => {
-		let cancelToken: CancelTokenSource;
-		async function getUser() {
-			cancelToken = axios.CancelToken.source();
-			try {
-				const res = await axios.get('/api/user', {
-					withCredentials: true,
-					cancelToken: cancelToken.token,
-				});
+	const { isError, isSuccess } = useQuery({
+		queryKey: ['user'],
+		queryFn: async () => await getCurrentUser(),
+		enabled: !isLogged,
+		retry: false,
+	});
 
-				setUser(res.data.user);
-			} catch (error) {
-				if (axios.isAxiosError(error)) {
-					const errResponse = error.response;
-					if (errResponse?.status === 403) {
-						console.log(errResponse.data.message);
-						navigate(redirectPath, { replace: true });
-					}
-				} else {
-					console.log(error);
-					navigate(redirectPath, { replace: true });
-				}
-			}
-		}
+	if (isError) return <Navigate to={redirectPath} replace />;
 
-		if (!user) getUser();
-
-		return () => {
-			if (cancelToken) {
-				cancelToken.cancel();
-			}
-		};
-	}, [user, setUser, navigate, redirectPath]);
-
-	return children ? children : <Outlet />;
+	if (isSuccess) {
+		return children ? children : <Outlet />;
+	} else {
+		return <></>;
+	}
 };
 
 export default ProtectedRoute;

@@ -17,18 +17,15 @@ export async function getTicketStatusCount(status: Status) {
 	}
 }
 
-export async function getTicket(
-	status?: Status,
-	limit?: number,
-	assignee?: string
-) {
+export async function getTicket(params: {
+	status?: Status;
+	limit?: number;
+	assignee?: string;
+}) {
+	console.log(params)
 	try {
 		const res = await axios.get<{ tickets: Ticket[] }>('/api/tickets', {
-			params: {
-				status,
-				limit,
-				assignee,
-			},
+			params,
 		});
 		return res.data.tickets;
 	} catch (error) {
