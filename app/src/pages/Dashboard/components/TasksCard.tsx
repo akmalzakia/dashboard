@@ -13,10 +13,7 @@ function TasksCard({ className }: TasksCardProps) {
 	const user = useUser();
 	const { data: tickets } = useQuery({
 		queryKey: ['tasks'],
-		queryFn: async () => {
-			const res = await getTicket({ limit: 5, assignee: user._id });
-			return res;
-		},
+		queryFn: () => getTicket({ limit: 5, assignee: user._id }),
 	});
 
 	function getDate(date: string) {

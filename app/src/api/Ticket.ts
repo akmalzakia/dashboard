@@ -17,7 +17,7 @@ export async function getTicketStatusCount(status: Status) {
 	}
 }
 
-export async function getTicket(params: {
+export async function getTicket(params?: {
 	status?: Status;
 	limit?: number;
 	assignee?: string;

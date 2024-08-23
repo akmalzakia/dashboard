@@ -28,7 +28,7 @@ enum TicketQueryFields {
 async function getTickets(
 	req: TicketRequest<
 		{},
-		{ limit?: number; status?: string; fields?: string; assignee?: string }
+		{ limit?: number; status?: string; fields?: string; assignee?: string, page?: number }
 	>,
 	res: Response
 ) {

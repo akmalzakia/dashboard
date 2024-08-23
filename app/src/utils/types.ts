@@ -18,4 +18,5 @@ export interface Ticket {
 	createdBy: SimpleUser;
 	status: Status;
 	description: string;
+	assignee?: SimpleUser;
 }

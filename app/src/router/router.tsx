@@ -4,6 +4,7 @@ import Dashboard from '../pages/Dashboard/Dashboard';
 import Overview from '../pages/Dashboard/Overview';
 import Register from '../pages/Register';
 import { UserProvider } from '../context/userContext';
+import Tickets from '../pages/Dashboard/Tickets';
 
 const router = createBrowserRouter([
 	{
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: '/tickets',
-				element: <></>,
+				element: <Tickets />,
 			},
 		],
 	},
