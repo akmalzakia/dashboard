@@ -1,5 +1,5 @@
 import { debounce, isArray } from 'lodash';
-import React, { ChangeEvent, useMemo, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
 interface FormInputProps
 	extends Pick<
@@ -25,14 +25,16 @@ function FormInput({
 	onValidate,
 }: FormInputProps) {
 	const [showPassword, setShowPassword] = useState(false);
-	const [invalid, setInvalid] = useState(false);
+	const [isValid, setIsValid] = useState(false);
 
 	const debouncedValidation = debounce((ev: ChangeEvent<HTMLInputElement>) => {
-		if (!validators) return;
-		
-		const validation = validate(ev.target.value, validators);
-		setInvalid(!validation);
-		onValidate?.(validation);
+		let isValid;
+		if (!validators) isValid = true;
+		else {
+			isValid = validate(ev.target.value, validators);
+		}
+		setIsValid(isValid);
+		onValidate?.(isValid);
 	}, 500);
 
 	function validate(
@@ -52,9 +54,9 @@ function FormInput({
 	}
 
 	return (
-		<>
+		<div className={className}>
 			<div className=''>{label}</div>
-			<div className={`relative ${className}`}>
+			<div className={`relative`}>
 				<input
 					type={
 						type === 'password'
@@ -64,7 +66,7 @@ function FormInput({
 							: type
 					}
 					className={`bg-gray-100 rounded-md px-2 py-1 w-full bg-searchbar focus:outline focus:outline-primary shadow-inner-xl placeholder:text-placeholder ${
-						invalid && 'outline outline-1 outline-red-600'
+						!isValid && 'outline outline-1 outline-red-600'
 					}`}
 					onChange={(e) => {
 						onChange?.(e);
@@ -81,7 +83,7 @@ function FormInput({
 						}}></input>
 				)}
 			</div>
-		</>
+		</div>
 	);
 }
 

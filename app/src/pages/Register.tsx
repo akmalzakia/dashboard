@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import Logo from '../components/Logo';
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FaAngleLeft } from 'react-icons/fa6';
 import axios, { AxiosError } from 'axios';
 import isEmail from 'validator/lib/isEmail';
