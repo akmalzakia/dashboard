@@ -28,7 +28,16 @@ enum TicketQueryFields {
 async function getTickets(
 	req: TicketRequest<
 		{},
-		{ limit?: number; status?: string; fields?: string; assignee?: string, page?: number }
+		{
+			limit?: number;
+			status?: string;
+			fields?: string;
+			assignee?: string;
+			page?: number;
+			prev?: string;
+			next?: string;
+			sort?: string;
+		}
 	>,
 	res: Response
 ) {
@@ -46,22 +55,68 @@ async function getTickets(
 		statusFilter = qs.assignee
 			? { ...statusFilter, assignee: qs.assignee }
 			: statusFilter;
+
+		//TO DO: pagination should be based on sort rather than fixed on id
+
+		if (qs.prev && qs.next) {
+			res.status(400).json({
+				message: "Next and prev query should not contain in the same request!"
+			})
+
+			return;
+		}
+
+		if (qs.prev) {
+			const [prevTimestamp, prevId] = qs.prev.split('_');
+			statusFilter = qs.prev
+				? {
+						...statusFilter,
+						$or: [
+							{ createdAt: { $gt: prevTimestamp } },
+							{ createdAt: prevTimestamp, _id: { $gt: prevId } },
+						],
+				  }
+				: statusFilter;
+		}
+
+		if (qs.next) {
+			const [nextTimestamp, nextId] = qs.next.split('_');
+			statusFilter = qs.next
+				? {
+						...statusFilter,
+						$or: [
+							{ createdAt: { $lt: nextTimestamp } },
+							{ createdAt: nextTimestamp, _id: { $lt: nextId } },
+						],
+				  }
+				: statusFilter;
+		}
+
 		const fields = qs.fields ? qs.fields.split(',') : null;
 
 		if (!fields || fields.includes(TicketQueryFields.Tickets)) {
 			const tickets = await Ticket.find({ ...statusFilter }, null, {
 				limit: qs.limit ?? 0,
 				lean: false,
-			}).populate({
-				path: 'createdBy',
-				select: 'id displayName email',
-			}).populate({
-				path: 'assignee',
-				select: 'id displayName email'
-			});
+			})
+				.sort({ createdAt: -1, _id: -1 })
+				.populate({
+					path: 'createdBy',
+					select: 'id displayName email',
+				})
+				.populate({
+					path: 'assignee',
+					select: 'id displayName email',
+				});
+			const firstItem = tickets[0];
+			const lastItem = tickets[tickets.length - 1];
+			const prev = `${firstItem.createdAt.toISOString()}_${firstItem._id}`;
+			const next = `${lastItem.createdAt.toISOString()}_${lastItem._id}`;
 			returnData = {
 				...returnData,
 				tickets,
+				prev,
+				next,
 			};
 		}
 
